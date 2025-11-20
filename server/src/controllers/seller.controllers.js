@@ -5,6 +5,16 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+const SELLER_COOKIE_MAX_AGE = 24 * 60 * 60 * 1000; // 1 day
+const sellerCookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+  maxAge: SELLER_COOKIE_MAX_AGE,
+  path: '/',
+};
+
+
 // api/seller/login
 const sellerLogin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -22,12 +32,7 @@ const sellerLogin = asyncHandler(async (req, res) => {
         expiresIn: '1d',
       }
     );
-    res.cookie('sellerToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    res.cookie('sellerToken', token, sellerCookieOptions);
     return res
       .status(200)
       .json(new ApiResponse(200, {}, 'Seller Logged in Successfully'));
@@ -48,11 +53,7 @@ const isSellerAuth = asyncHandler(async (req, res) => {
 
 // api/seller/logout
 const sellerLogout = asyncHandler(async (req, res) => {
-  res.clearCookie('sellerToken', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-  });
+  res.clearCookie('sellerToken', sellerCookieOptions);
   return res
     .status(200)
     .json(new ApiResponse(201, {}, 'Logged Out Successfully'));

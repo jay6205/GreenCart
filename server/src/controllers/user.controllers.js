@@ -6,6 +6,16 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+const COOKIE_MAX_AGE = 24 * 60 * 60 * 1000; // 1 day
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // <-- important for cross-site cookies
+  maxAge: COOKIE_MAX_AGE,
+  path: '/', // ensures cookie sent for all backend routes
+};
+
+
 // api/user/register
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
@@ -25,12 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
   });
   const token = user.generateToken();
 
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000,
-  });
+  res.cookie('token', token, cookieOptions);
 
   return res.status(201).json(
     new ApiResponse(
@@ -68,12 +73,7 @@ const login = asyncHandler(async (req, res) => {
 
   const token = user.generateToken();
 
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-    maxAge: 24 * 60 * 60 * 1000,
-  });
+  res.cookie('token', token, cookieOptions);
 
   return res.status(200).json(
     new ApiResponse(
@@ -98,11 +98,7 @@ const isAuth = asyncHandler(async (req, res) => {
 
 // api/user/logout
 const logout = asyncHandler(async (req, res) => {
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-  });
+  res.clearCookie('token', cookieOptions);
   return res
     .status(200)
     .json(new ApiResponse(201, {}, 'Logged Out Successfully'));

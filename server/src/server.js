@@ -5,6 +5,8 @@ import cookieParser from 'cookie-parser';
 const app = express();
 const port = process.env.PORT || 4000;
 
+app.set('trust proxy', 1);
+
 // basic configurations
 app.use(express.json({ limit: '1000mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -12,12 +14,31 @@ app.use(express.static('public'));
 app.use(cookieParser());
 
 // cors configurations
+const rawOrigins = process.env.CORS_ORIGIN || 'http://localhost:5173';
+const allowedOrigins = rawOrigins
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(',') || 'http://localhost:5173',
+    origin: function (origin, callback) {
+      // allow requests with no origin (like curl, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(
+          new Error(`CORS error: Origin ${origin} not allowed by CORS`),
+          false
+        );
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Authorization', 'Content-Type', 'Date', 'Connection'],
+    optionsSuccessStatus: 204,
   })
 );
 
