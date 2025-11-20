@@ -31,6 +31,29 @@ const NavBar = () => {
       navigate("products");
     }
   }, [searchQuery]);
+
+  const showsellerLogin = async () => {
+    try {
+      const res = await axios.post(
+        "/api/seller/login",
+        {
+          email: process.env.REACT_APP_SELLER_EMAIL,
+          password: process.env.REACT_APP_SELLER_PASSWORD,
+        },
+        { withCredentials: true }
+      );
+
+      if (res.status === 200) {
+        // sellerToken cookie is now set
+        alert("Seller logged in successfully!");
+        window.location.href = "/seller"; // change to your actual seller page
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Seller login failed");
+    }
+  };
+
   return (
     <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
       <NavLink to="/" onClick={() => setOpen(false)}>
@@ -111,7 +134,7 @@ const NavBar = () => {
         aria-label="Menu"
         className=""
       >
-        <img src={assets.menu_icon} alt="menu_icon" />
+        <img onClick={showsellerLogin} src={assets.menu_icon} alt="menu_icon" />
       </button>
 
       {/* Mobile Menu */}
