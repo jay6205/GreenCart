@@ -15,6 +15,8 @@ const userSchema = new Schema(
     },
     password: { type: String, required: [true, 'Password is required'] },
     cartItems: { type: Object, default: {} },
+    googleId: { type: String, unique: true, sparse: true },
+    provider: { type: String, enum: ['local', 'google'], default: 'local' },
   },
   {
     minimize: false,

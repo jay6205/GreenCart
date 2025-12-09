@@ -15,6 +15,10 @@ const cookieOptions = {
   path: '/', // ensures cookie sent for all backend routes
 };
 
+export const COOKIE_OPTIONS = cookieOptions;
+export const setAuthCookie = (res, token) => res.cookie('token', token, COOKIE_OPTIONS);
+
+
 
 // api/user/register
 const registerUser = asyncHandler(async (req, res) => {
@@ -36,12 +40,12 @@ const registerUser = asyncHandler(async (req, res) => {
   const token = user.generateToken();
 
   res.cookie('token', token, cookieOptions);
-
+  const safeUser = await User.findById(user._id).select('-password');
   return res.status(201).json(
     new ApiResponse(
       201,
       {
-        user: user,
+        user: safeUser,
       },
       'User registered successfully'
     )

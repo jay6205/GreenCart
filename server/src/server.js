@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import passport from "./utils/passport-config.js"
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -45,6 +46,9 @@ app.use(
 // healthcheck routes
 import healthCheckRouter from './routes/healthcheck.routes.js';
 app.use('/api/healthcheck', healthCheckRouter);
+
+// Google Login routes
+app.use(passport.initialize())
 
 // user routes
 import userRouter from './routes/user.routes.js';
