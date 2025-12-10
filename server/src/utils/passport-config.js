@@ -2,6 +2,9 @@ import passport from "passport"
 import { Strategy as GoogleStrategy } from "passport-google-oauth20"
 import User from "../models/user.models.js"
 import crypto from "crypto"
+console.log('GOOGLE_CLIENT_ID=', process.env.GOOGLE_CLIENT_ID);
+console.log('GOOGLE_CALLBACK_URL=', process.env.GOOGLE_CALLBACK_URL);
+
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
@@ -10,7 +13,7 @@ passport.use(new GoogleStrategy({
 },
 
     async (accessToken, refreshToken, profile, done) => {
-        console.log("Google Profile: ", profile);
+        // console.log("Google Profile: ", profile);
         try {
             const email = profile.emails?.[0]?.value;
             let user = await User.findOne({ googleId: profile.id })
