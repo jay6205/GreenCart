@@ -132,6 +132,21 @@ const Login = () => {
           />
         </div>
         <div className="mt-4 text-left text-primary">
+          {/* Google Sign-in button */}
+          <button
+            type="button"
+            onClick={() => {
+              // This navigates to the backend route which starts the OAuth flow
+              window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/user/google`;
+              // If your backend mounts the user router at /api/user, the path becomes /api/user/google
+            }}
+            className="mt-4 w-full h-11 rounded-full border flex items-center justify-center gap-3"
+          >
+            <img src="/google-logo.svg" alt="Google" style={{ width: 18 }} />
+            <span>Continue with Google</span>
+          </button>
+        </div>
+        <div className="mt-4 text-left text-primary">
           <button className="text-sm" type="reset">
             Forget password?
           </button>
