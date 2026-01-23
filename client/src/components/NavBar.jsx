@@ -134,7 +134,7 @@ const NavBar = () => {
         aria-label="Menu"
         className=""
       >
-        <img onClick={showsellerLogin} src={assets.menu_icon} alt="menu_icon" />
+        <img src={assets.menu_icon} alt="menu_icon" />
       </button>
 
       {/* Mobile Menu */}
