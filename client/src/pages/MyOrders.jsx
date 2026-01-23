@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { dummyOrders } from "../assets/assets";
+import { assets, dummyOrders } from "../assets/assets";
 import { useAppContext } from "../context/AppContext";
 import toast from "react-hot-toast";
 
@@ -49,16 +49,16 @@ const MyOrders = () => {
               <div className="flex items-center mb-4 md:mb-0">
                 <div className="bg-primary/10 p-4 rounded-lg">
                   <img
-                    src={item.product.image[0]}
+                    src={item.product?.image?.[0] || assets.box_icon}
                     alt=""
                     className="w-16 h-16 "
                   />
                 </div>
                 <div className="ml-4 ">
                   <h2 className=" text-xl font-medium text-gray-800 ">
-                    {item.product.name}
+                    {item.product?.name || "Product Unavailable"}
                   </h2>
-                  <p>{item.product.category}</p>
+                  <p>{item.product?.category}</p>
                 </div>
               </div>
               <div className="flex flex-col justify-center md:ml-8 mb-4 md:mb-0">
@@ -68,7 +68,7 @@ const MyOrders = () => {
               </div>
               <p className="text-primary text-lg font-medium">
                 Amount:$
-                {item.product.offerPrice * item.quantity}
+                {(item.product?.offerPrice || 0) * item.quantity}
               </p>
             </div>
           ))}
