@@ -43,10 +43,10 @@ const sellerLogin = asyncHandler(async (req, res) => {
 
 // api/seller/is-auth
 const isSellerAuth = asyncHandler(async (req, res) => {
-  const user = req.user;
+  const seller = req.seller;
   return res.status(200).json(
     new ApiResponse(200, {
-      user: user,
+      seller: seller,
     })
   );
 });

@@ -14,6 +14,7 @@ export const authSeller = asyncHandler(async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET
     );
     if (decodedtoken.email === process.env.SELLER_EMAIL) {
+      req.seller = { email: decodedtoken.email };
       next();
     } else {
       throw new ApiError(401, 'Unauthorized request');
