@@ -37,16 +37,16 @@ const NavBar = () => {
       const res = await axios.post(
         "/api/seller/login",
         {
-          email: process.env.REACT_APP_SELLER_EMAIL,
-          password: process.env.REACT_APP_SELLER_PASSWORD,
+          email: import.meta.env.REACT_APP_SELLER_EMAIL,
+          password: import.meta.env.REACT_APP_SELLER_PASSWORD,
         },
         { withCredentials: true }
       );
 
       if (res.status === 200) {
         // sellerToken cookie is now set
-        alert("Seller logged in successfully!");
-        window.location.href = "/seller"; // change to your actual seller page
+        toast.success("Seller logged in successfully!");
+        navigate("/seller");
       }
     } catch (err) {
       console.error(err);
